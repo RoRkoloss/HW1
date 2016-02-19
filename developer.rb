@@ -50,20 +50,52 @@ MAX_TASKS = 10
     @task_list.empty?
   end
 
+end
 
+class JuniorDeveloper < Developer
 
+  MAX_TASKS = 5
 
+  def add_task(task)
+  	if @task_list.length == MAX_TASKS	
+  	  raise("Слишком много работы!")
+    elsif task.length > 20
+      raise("Слишком сложно!")
+    end
+      @task_list.push(task)
+      puts %Q{#{@name}: добавлена задача "#{task}". Всего в списке задач: #{@task_list.length}} 
+  end
+
+def work!
+  	if @task_list.empty?	
+  	  raise("Нечего делать!") 	
+  	end
+  	puts %Q{#{@name}: пытаюсь делать задачу "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+  end
 
 end
 
-dev = Developer.new ("Вася")
+class SeniorDeveloper < Developer
+  MAX_TASKS = 15
+
+  def work!
+  	if @task_list.empty?	
+  	  raise("Нечего делать!") 	
+  	end
+  	puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+  end
+  
+end
+
+
+p dev = JuniorDeveloper.new("Вася")
 dev
-/5.times do |i| 
+5.times do |i| 
 	dev.add_task("Полить кактус")
-end/
+end
 #dev.add_task("Полить морковку")
 dev.tasks 
 #dev.work!
 #dev.tasks
-#dev.work!
+dev.work!
 dev.status
