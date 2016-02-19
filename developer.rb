@@ -33,23 +33,35 @@ MAX_TASKS = 10
 
   def status
     case 
-    when @task_list.empty?
+    when can_work?
     	puts %Q{"свободен"}
-    when @task_list.length < MAX_TASKS
+    when can_add_task?
     	puts %Q{"работаю"}
     else
     	puts %Q{"занят"}
     end
-
   end
+
+  def can_add_task?
+    @task_list.length < MAX_TASKS
+  end
+
+  def can_work?
+    @task_list.empty?
+  end
+
+
+
+
+
 end
 
 dev = Developer.new ("Вася")
 dev
-9.times do |i| 
+/5.times do |i| 
 	dev.add_task("Полить кактус")
-end
-dev.add_task("Полить морковку")
+end/
+#dev.add_task("Полить морковку")
 dev.tasks 
 #dev.work!
 #dev.tasks
