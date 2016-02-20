@@ -2,6 +2,9 @@ class Developer
 
 MAX_TASKS = 10
 
+  attr_reader :task_list
+  attr_writer :task_list
+
   def initialize(name)
     @name = name
     @task_list = Array.new()
@@ -89,8 +92,7 @@ MAX_TASKS = 15
 
 # makes a choise
   def work!
-    a = Random.rand < 0.5
-    case a
+    case Random.rand < 0.5
       when true
       	several_tasks
       else
@@ -112,7 +114,7 @@ MAX_TASKS = 15
 end
 
 
-# class for a check of homework
+# class for check homework
 /class Check
 sdev = SeniorDeveloper.new("Senior")
 dev = Developer.new("Jun")
@@ -120,9 +122,9 @@ dev = Developer.new("Jun")
 	dev.add_task("Kактус")
 	sdev.add_task("Морковка")
 end
-#dev.add_task("Полить морковку")
+sdev.add_task("Полить морковку")
 dev.tasks 
-#sdev.work!
+sdev.work!
 #sdev.tasks
 #jdev.work!
 #jdev.tasks
