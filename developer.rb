@@ -3,7 +3,6 @@ class Developer
 MAX_TASKS = 10
 
   attr_reader :task_list
-  attr_writer :task_list
 
   def initialize(name)
     @name = name
@@ -21,7 +20,7 @@ MAX_TASKS = 10
 
 # prints the list of tasks 
   def tasks()	
-    @task_list.each_with_index{|a, i| puts "#{i + 1}. #{a}"}
+    @task_list.map.with_index{|a, i| puts "#{i + 1}. #{a}"}.join
   end
 
 # prints and deletes work
@@ -115,19 +114,21 @@ end
 
 
 # class for check homework
-/class Check
+=begin 
+class Check
 sdev = SeniorDeveloper.new("Senior")
 dev = Developer.new("Jun")
-5.times do |i| 
+10.times do |i| 
 	dev.add_task("Kактус")
 	sdev.add_task("Морковка")
 end
 sdev.add_task("Полить морковку")
-dev.tasks 
+puts dev.tasks 
 sdev.work!
-#sdev.tasks
+puts sdev.tasks
 #jdev.work!
 #jdev.tasks
-#sdev.status
+sdev.status
 #jdev.status
-end/
+end
+=end
