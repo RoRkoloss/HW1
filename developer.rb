@@ -20,7 +20,7 @@ MAX_TASKS = 10
 
 # prints the list of tasks 
   def tasks()	
-    @task_list.map.with_index{|a, i| puts "#{i + 1}. #{a}"}.join
+    @task_list.map.with_index {|task, num| %Q(#{num+1}."#{task}")}
   end
 
 # prints and deletes work
@@ -33,22 +33,22 @@ MAX_TASKS = 10
 
 # checks possibility to work
   def status
-    case 
-    when can_work?
-    	puts %Q{"свободен"}
+  	case 
+    when !can_work?
+    	puts %Q{свободен}
     when can_add_task?
-    	puts %Q{"работаю"}
+    	puts %Q{работаю}
     else
-    	puts %Q{"занят"}
+    	puts %Q{занят}
     end
   end
 
   def can_add_task?
-    @task_list.length < MAX_TASKS
+    @task_list.length < self.class::MAX_TASKS
   end
 
   def can_work?
-    @task_list.empty?
+    !@task_list.empty?
   end
 
 end
@@ -112,23 +112,73 @@ MAX_TASKS = 15
 
 end
 
+class Team
+  attr_reader :seniors
+  attr_reader :developers
+  attr_reader :juniors
+  
+  def initialize(&block)
+    instance_eval &block
+  end
+
+  private
+  def have_juniors(*names)
+  	@developers = names
+  end
+  
+  private
+  def have_seniors(*names)
+    @seniors = names
+  end
+  
+  private
+  def have_developers(*names)
+  	@developers = names
+  end
+end
+
+# Мы хотим, чтобы работал вот такой код (упрощённый вариант домашки)
+# А значит:
+# * метод Team#initialize должен принимать блок
+# * этот блок должен выполняться в контексте самого объекта,
+# * ...создавая в нём senior programmers
+# * ...поэтому в initialize мы используем instance_eval
+=begin s = Team.new{
+  have_seniors 'Вася', 'Маша'
+}
+
+d = Team.new {
+  have_developers 'Олеся','Василий', 'Игорь-Богдан'
+}
+
+j = Team.new {
+  have_juniors 'Коля','Паша', 'Максим'
+}
+end
+
+p s.seniors
+p d.developers
+p j.developers
+=end
 
 # class for check homework
-=begin 
+begin 
 class Check
-sdev = SeniorDeveloper.new("Senior")
-dev = Developer.new("Jun")
-10.times do |i| 
-	dev.add_task("Kактус")
-	sdev.add_task("Морковка")
+jdev = JuniorDeveloper.new("Junior")
+
+3.times do |i| 
+jdev.add_task("Kактус")
+	#sdev.add_task("Морковка")
 end
-sdev.add_task("Полить морковку")
-puts dev.tasks 
-sdev.work!
-puts sdev.tasks
+#jdev.add_task("Полить морковку ")
+#puts dev.tasks 
+jdev.can_work?
+#sdev.work!
+#puts sdev.tasks
 #jdev.work!
 #jdev.tasks
-sdev.status
-#jdev.status
+#sdev.status
+p jdev.status
+p jdev.can_add_task?
 end
-=end
+end
