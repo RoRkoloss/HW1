@@ -51,6 +51,10 @@ MAX_TASKS = 10
     !@task_list.empty?
   end
 
+  def dev_type
+  	:developer
+  end
+
 end
 
 class JuniorDeveloper < Developer
@@ -68,11 +72,15 @@ class JuniorDeveloper < Developer
   end
 
 # prints and deletes work
-def work!
+  def work!
   	if @task_list.empty?	
   	  raise("Нечего делать!") 	
   	end
-  	puts %Q{#{@name}: пытаюсь делать задачу "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+    puts %Q{#{@name}: пытаюсь делать задачу "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+  end
+
+  def dev_type
+    :junior
   end
 
 end
@@ -110,59 +118,146 @@ MAX_TASKS = 15
   	end
   end
 
+  def dev_type
+  	:senior
+  end
+
 end
 
 class Team
+=begin
   attr_reader :seniors
-  attr_reader :developers
   attr_reader :juniors
-  
+  attr_reader :developers
+  attr_reader :priotity
+  attr_reader :dev
+  attr_writer :dev
+ 
+=end
+  require 'pp' 
+
   def initialize(&block)
+    @team_dev = Array.new()
+    @developers = Array.new()
+    @juniors = Array.new()
+    @seniors = Array.new()
     instance_eval &block
   end
 
-  private
-  def have_juniors(*names)
-  	@developers = names
+  def all
+    @team_dev
   end
-  
-  private
-  def have_seniors(*names)
-    @seniors = names
+
+  def seniors
+  	@seniors
   end
-  
-  private
-  def have_developers(*names)
-  	@developers = names
+
+  def developers
+  	@developers
   end
-end
 
-# Мы хотим, чтобы работал вот такой код (упрощённый вариант домашки)
-# А значит:
-# * метод Team#initialize должен принимать блок
-# * этот блок должен выполняться в контексте самого объекта,
-# * ...создавая в нём senior programmers
-# * ...поэтому в initialize мы используем instance_eval
-=begin s = Team.new{
-  have_seniors 'Вася', 'Маша'
-}
+  def juniors
+  	@juniors
+  end
 
-d = Team.new {
-  have_developers 'Олеся','Василий', 'Игорь-Богдан'
-}
+  def add_task (task)
+    
+  #@juniors.sort_by{|dev| dev.task_list.size}
 
-j = Team.new {
-  have_juniors 'Коля','Паша', 'Максим'
-}
-end
+  #@developers.sort_by{|dev| dev.task_list.size}
 
-p s.seniors
-p d.developers
-p j.developers
+  @team_dev.sort_by{|dev| dev.task_list.size}
+  @team_dev.sort_by{|dev| dev.dev_type, }
+
+
+
+=begin
+
+  def on_task :junior do |dev, task|
+    puts 'Отдали задачу #{task} разработчику #{dev.name}, следите за ним!'
+  end
+
+  def on_task :developer do |dev, task|
+    puts 'Девелопер #{dev.name} крутит носом, но #{task} сделает!'
+  end
+
+  def on_task :senior do |dev, task|
+    puts '#{dev.name} сделает #{task}, но просит больше с такими глупостями не приставать!'
+  end
 =end
 
+
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+private
+  def have_seniors(*names)
+    @seniors = names
+    @seniors.each{|name| @team_dev.push(make_developer(SeniorDeveloper, name))}
+  end
+
+  
+  def have_developers(*names)
+    @developers = names
+    @developers.each{|name| @team_dev.push(make_developer(Developer, name))}
+  end
+
+  
+  def have_juniors(*names)
+  	@juniors = names
+    @juniors.each{|name| @team_dev.push(make_developer(JuniorDeveloper, name))}
+  end
+
+  
+  def priority(*level)
+    @priority = level
+  end
+  
+  
+  def make_developer(type, name)
+    type.new(name)
+  end
+=begin
+  def all_developers
+    @dev = @seniors + @developers + @juniors
+  end
+=end
+end
+
+
+
+
+team = Team.new do
+
+  have_seniors 'Алена', 'Маша', 'Валя' 
+  have_developers 'Рома', 'Вася'
+  have_juniors 'Коля','Паша', 'Максим'
+  
+
+  priority :juniors, :developers, :seniors
+
+end
+
+#puts a.dev_type()
+
+#p team.dev_list
+
+
+pp team.add_task('vfif')
+
 # class for check homework
-begin 
+=begin 
 class Check
 jdev = JuniorDeveloper.new("Junior")
 
@@ -176,9 +271,9 @@ jdev.can_work?
 #sdev.work!
 #puts sdev.tasks
 #jdev.work!
-#jdev.tasks
+puts jdev.tasks
 #sdev.status
 p jdev.status
 p jdev.can_add_task?
 end
-end
+=end
