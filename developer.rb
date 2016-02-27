@@ -52,7 +52,7 @@ MAX_TASKS = 10
   end
 
   def dev_type
-  	:developer
+  	:developers
   end
 
 end
@@ -80,7 +80,7 @@ class JuniorDeveloper < Developer
   end
 
   def dev_type
-    :junior
+    :juniors
   end
 
 end
@@ -119,7 +119,7 @@ MAX_TASKS = 15
   end
 
   def dev_type
-  	:senior
+  	:seniors
   end
 
 end
@@ -160,17 +160,19 @@ class Team
   	@juniors
   end
 
-  def add_task (task)
+
+  def add_task(task)
+  	
     
   #@juniors.sort_by{|dev| dev.task_list.size}
 
   #@developers.sort_by{|dev| dev.task_list.size}
 
-  @team_dev.sort_by{|dev| dev.task_list.size}
-  @team_dev.sort_by{|dev| dev.dev_type, }
+  #@team_dev.sort_by{|dev| dev.task_list.size}
+  #@team_dev.sort_by{|dev| dev.dev_type, }
 
-
-
+  b = @team_dev.sort_by{|dev| [dev.task_list.size, @priority.index(dev.dev_type)]}
+  b.first.add_task(task)
 =begin
 
   def on_task :junior do |dev, task|
@@ -240,9 +242,9 @@ end
 
 team = Team.new do
 
-  have_seniors 'Алена', 'Маша', 'Валя' 
-  have_developers 'Рома', 'Вася'
-  have_juniors 'Коля','Паша', 'Максим'
+  have_seniors 'S1', 'S2', 'S3' 
+  have_developers 'D1', 'D2'
+  have_juniors 'J1','J2', 'J3'
   
 
   priority :juniors, :developers, :seniors
@@ -253,9 +255,11 @@ end
 
 #p team.dev_list
 
+50.times do
 
-pp team.add_task('vfif')
+pp team.add_task('FGHSWHS')
 
+end
 # class for check homework
 =begin 
 class Check
