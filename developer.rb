@@ -3,6 +3,7 @@ class Developer
 MAX_TASKS = 10
 
   attr_reader :task_list
+  attr_reader :name
 
   def initialize(name)
     @name = name
@@ -137,13 +138,14 @@ class Team
   require 'pp' 
 
   def initialize(&block)
-    @team_dev = Array.new()
-    @developers = Array.new()
-    @juniors = Array.new()
-    @seniors = Array.new()
+    @team_dev = []
+    @developers = []
+    @juniors = []
+    @seniors = []
+    @massages = {}
     instance_eval &block
   end
-
+  
   def all
     @team_dev
   end
@@ -160,48 +162,31 @@ class Team
   	@juniors
   end
 
-
-  def add_task(task)
-  	
+  #on_task = {+++++++++++++++++++++++++++++++++++++++++++++
+  #  junior: 
+  #  developer: ,
+  #  senior: '#%s сделает %s, но просит больше с такими глупостями не приставать!'
+ # }
+  
+  def add_task(task)	
     
-  #@juniors.sort_by{|dev| dev.task_list.size}
+    dev = @team_dev.sort_by{|dev| [dev.task_list.size, @priority.index(dev.dev_type)]}.first
+    dev.add_task(task)
+    if @massages.has_key?(cut(dev)) 
+       @massages[cut(dev)].call(dev, task)
+       #puts dev.name
+    end	
+  end
 
-  #@developers.sort_by{|dev| dev.task_list.size}
-
-  #@team_dev.sort_by{|dev| dev.task_list.size}
-  #@team_dev.sort_by{|dev| dev.dev_type, }
-
-  b = @team_dev.sort_by{|dev| [dev.task_list.size, @priority.index(dev.dev_type)]}
-  b.first.add_task(task)
+  def on_task(type, &block)
+    @massages[type] = block
+  end
+  
 =begin
-
-  def on_task :junior do |dev, task|
-    puts 'Отдали задачу #{task} разработчику #{dev.name}, следите за ним!'
-  end
-
-  def on_task :developer do |dev, task|
-    puts 'Девелопер #{dev.name} крутит носом, но #{task} сделает!'
-  end
-
-  def on_task :senior do |dev, task|
-    puts '#{dev.name} сделает #{task}, но просит больше с такими глупостями не приставать!'
+  def print
+   	@massages.each{|key, mass| puts "#{key}: #{mass}"}
   end
 =end
-
-
-  end
-
-
-
-
-
-
-
-
-
-
-
-
 
 private
   def have_seniors(*names)
@@ -230,11 +215,11 @@ private
   def make_developer(type, name)
     type.new(name)
   end
-=begin
-  def all_developers
-    @dev = @seniors + @developers + @juniors
+
+  def cut (dev)
+    dev.dev_type.to_s.chop.to_sym
   end
-=end
+
 end
 
 
@@ -242,42 +227,29 @@ end
 
 team = Team.new do
 
-  have_seniors 'S1', 'S2', 'S3' 
-  have_developers 'D1', 'D2'
-  have_juniors 'J1','J2', 'J3'
+  have_seniors 'S1-1', 'S2-2', 'S3-3' 
+  have_developers 'D1-1', 'D2-2'
+  have_juniors 'J1-1','J2-2', 'J3-3'
   
 
-  priority :juniors, :developers, :seniors
+  priority :juniors, :seniors, :developers
 
 end
 
-#puts a.dev_type()
-
-#p team.dev_list
-
-50.times do
-
-pp team.add_task('FGHSWHS')
-
+team.on_task (:junior) do |dev, task|
+  puts "Отдали задачу #{task} разработчику #{dev.name}, следите за ним!"
 end
-# class for check homework
-=begin 
-class Check
-jdev = JuniorDeveloper.new("Junior")
 
-3.times do |i| 
-jdev.add_task("Kактус")
-	#sdev.add_task("Морковка")
+team.on_task (:developer) do |dev, task|
+  puts "Девелопер #{dev.name} крутит носом, но задачу #{task} сделает!"
 end
-#jdev.add_task("Полить морковку ")
-#puts dev.tasks 
-jdev.can_work?
-#sdev.work!
-#puts sdev.tasks
-#jdev.work!
-puts jdev.tasks
-#sdev.status
-p jdev.status
-p jdev.can_add_task?
+
+team.on_task (:senior) do |dev, task|  
+  puts "#{dev.name} сделает #{task}, но просит больше с такими глупостями не приставать!"
 end
-=end
+
+10.times do
+team.add_task('Покормить кота')
+end
+
+#team.print
