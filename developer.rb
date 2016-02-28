@@ -12,35 +12,35 @@ MAX_TASKS = 10
 
 
   def add_task(task)
-  	if @task_list.length == MAX_TASKS	
-  	  raise("Слишком много работы!") 	
-  	end
+    if @task_list.length == MAX_TASKS
+      raise("Слишком много работы!")
+    end
     @task_list.push(task)
     puts %Q{#{@name}: добавлена задача "#{task}". Всего в списке задач: #{@task_list.length}}
   end
 
-# prints the list of tasks 
-  def tasks()	
+# prints the list of tasks
+  def tasks()
     @task_list.map.with_index {|task, num| %Q(#{num+1}."#{task}")}
   end
 
 # prints and deletes work
   def work!
-  	if @task_list.empty?	
-  	  raise("Нечего делать!") 	
-  	end
-  	puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+    if @task_list.empty?
+      raise("Нечего делать!")
+    end
+    puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}
   end
 
 # checks possibility to work
   def status
-  	case 
+    case 
     when !can_work?
-    	puts %Q{свободен}
+      puts %Q{свободен}
     when can_add_task?
-    	puts %Q{работаю}
+      puts %Q{работаю}
     else
-    	puts %Q{занят}
+      puts %Q{занят}
     end
   end
 
@@ -53,7 +53,7 @@ MAX_TASKS = 10
   end
 
   def dev_type
-  	:developers
+    :developers
   end
 
 end
@@ -63,20 +63,20 @@ class JuniorDeveloper < Developer
   MAX_TASKS = 5
 
   def add_task(task)
-  	if @task_list.length == MAX_TASKS	
-  	  raise("Слишком много работы!")
+    if @task_list.length == MAX_TASKS
+      raise("Слишком много работы!")
     elsif task.length > 20
       raise("Слишком сложно!")
     end
       @task_list.push(task)
-      puts %Q{#{@name}: добавлена задача "#{task}". Всего в списке задач: #{@task_list.length}} 
+      puts %Q{#{@name}: добавлена задача "#{task}". Всего в списке задач: #{@task_list.length}}
   end
 
 # prints and deletes work
   def work!
-  	if @task_list.empty?	
-  	  raise("Нечего делать!") 	
-  	end
+    if @task_list.empty?
+      raise("Нечего делать!")
+    end
     puts %Q{#{@name}: пытаюсь делать задачу "#{@task_list.shift}". Осталось задач: #{task_list.length}}
   end
 
@@ -91,9 +91,9 @@ class SeniorDeveloper < Developer
 MAX_TASKS = 15
 
   def add_task(task)
-  	if @task_list.length == MAX_TASKS	
-  	  raise("Слишком много работы!")
-  	end
+    if @task_list.length == MAX_TASKS
+      raise("Слишком много работы!")
+    end
     @task_list.push(task)
     puts %Q{#{@name}: добавлена задача "#{task}". Всего в списке задач: #{@task_list.length}}
   end
@@ -102,40 +102,32 @@ MAX_TASKS = 15
   def work!
     case Random.rand < 0.5
       when true
-      	several_tasks
+        several_tasks
       else
-      	puts 'Что-то лень'
-    end	
+        puts 'Что-то лень'
+    end
   end
 
 # does several tasks
   def several_tasks
-  	if @task_list.empty?	
-  	  raise("Нечего делать!") 	
-  	end
-  	  puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}
-  	unless @task_list.empty?
-  	  puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}	
-  	end
+    if @task_list.empty?
+      raise("Нечего делать!")
+    end
+      puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+    unless @task_list.empty?
+      puts %Q{#{@name}: выполнена задача "#{@task_list.shift}". Осталось задач: #{task_list.length}}
+    end
   end
 
   def dev_type
-  	:seniors
+    :seniors
   end
 
 end
 
 class Team
-=begin
-  attr_reader :seniors
-  attr_reader :juniors
-  attr_reader :developers
-  attr_reader :priotity
-  attr_reader :dev
-  attr_writer :dev
- 
-=end
-  require 'pp' 
+
+  require 'pp'
 
   def initialize(&block)
     @team_dev = []
@@ -151,66 +143,58 @@ class Team
   end
 
   def seniors
-  	@seniors
+    @seniors
   end
 
   def developers
-  	@developers
+    @developers
   end
 
   def juniors
-  	@juniors
+    @juniors
   end
-
-  #on_task = {+++++++++++++++++++++++++++++++++++++++++++++
-  #  junior: 
-  #  developer: ,
-  #  senior: '#%s сделает %s, но просит больше с такими глупостями не приставать!'
- # }
   
-  def add_task(task)	
-    
-    dev = @team_dev.sort_by{|dev| [dev.task_list.size, @priority.index(dev.dev_type)]}.first
+  def add_task(task)
+    dev = sort.first
     dev.add_task(task)
-    if @massages.has_key?(cut(dev)) 
+    if @massages.has_key?(cut(dev))
        @massages[cut(dev)].call(dev, task)
-       #puts dev.name
-    end	
+    end
+  end
+  
+  def report
+    b = sort
+    b.each{|dev| puts "#{dev.name} (#{dev.dev_type.to_s.chop}): #{dev.task_list.join(", ")}"}
   end
 
   def on_task(type, &block)
     @massages[type] = block
   end
-  
-=begin
-  def print
-   	@massages.each{|key, mass| puts "#{key}: #{mass}"}
-  end
-=end
 
 private
+
+  def sort
+    @team_dev.sort_by{|dev| [dev.task_list.size, @priority.index(dev.dev_type)]}
+  end
+
   def have_seniors(*names)
-    @seniors = names
-    @seniors.each{|name| @team_dev.push(make_developer(SeniorDeveloper, name))}
+    names.each{|name| @seniors.push(make_developer(SeniorDeveloper, name))}
+    @team_dev.concat(@seniors)
   end
 
-  
   def have_developers(*names)
-    @developers = names
-    @developers.each{|name| @team_dev.push(make_developer(Developer, name))}
+    names.each{|name| @developers.push(make_developer(Developer, name))}
+    @team_dev.concat(@developers)
   end
-
   
   def have_juniors(*names)
-  	@juniors = names
-    @juniors.each{|name| @team_dev.push(make_developer(JuniorDeveloper, name))}
+    names.each{|name| @juniors.push(make_developer(JuniorDeveloper, name))}
+    @team_dev.concat(@juniors)
   end
 
-  
   def priority(*level)
     @priority = level
   end
-  
   
   def make_developer(type, name)
     type.new(name)
@@ -222,9 +206,7 @@ private
 
 end
 
-
-
-
+=begin
 team = Team.new do
 
   have_seniors 'S1-1', 'S2-2', 'S3-3' 
@@ -232,7 +214,7 @@ team = Team.new do
   have_juniors 'J1-1','J2-2', 'J3-3'
   
 
-  priority :juniors, :seniors, :developers
+  priority :juniors, :developers, :seniors
 
 end
 
@@ -248,8 +230,13 @@ team.on_task (:senior) do |dev, task|
   puts "#{dev.name} сделает #{task}, но просит больше с такими глупостями не приставать!"
 end
 
-10.times do
+15.times do
 team.add_task('Покормить кота')
 end
 
-#team.print
+puts team.all
+puts team.seniors
+puts team.juniors
+puts team.developers
+team.report
+=end
