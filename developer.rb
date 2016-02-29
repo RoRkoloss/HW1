@@ -178,18 +178,20 @@ private
   end
 
   def have_seniors(*names)
-    names.each{|name| @seniors.push(make_developer(SeniorDeveloper, name))}
-    @team_dev.concat(@seniors)
+    have(names, @seniors, SeniorDeveloper)
   end
 
   def have_developers(*names)
-    names.each{|name| @developers.push(make_developer(Developer, name))}
-    @team_dev.concat(@developers)
+    have(names, @developers, Developer)
   end
   
   def have_juniors(*names)
-    names.each{|name| @juniors.push(make_developer(JuniorDeveloper, name))}
-    @team_dev.concat(@juniors)
+    have(names, @juniors, JuniorDeveloper)
+  end
+
+  def have(names, list, type)
+    names.each{|name| list.push(make_developer(type, name))}
+    @team_dev.concat(list)
   end
 
   def priority(*level)
@@ -216,20 +218,21 @@ team = Team.new do
 
   priority :juniors, :developers, :seniors
 
-end
 
-team.on_task (:junior) do |dev, task|
+
+on_task (:junior) do |dev, task|
   puts "Отдали задачу #{task} разработчику #{dev.name}, следите за ним!"
 end
 
-team.on_task (:developer) do |dev, task|
+on_task (:developer) do |dev, task|
   puts "Девелопер #{dev.name} крутит носом, но задачу #{task} сделает!"
 end
 
-team.on_task (:senior) do |dev, task|  
+on_task (:senior) do |dev, task|  
   puts "#{dev.name} сделает #{task}, но просит больше с такими глупостями не приставать!"
 end
 
+end
 15.times do
 team.add_task('Покормить кота')
 end
