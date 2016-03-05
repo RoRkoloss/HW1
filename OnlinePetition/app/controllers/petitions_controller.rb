@@ -17,8 +17,8 @@ class PetitionsController < ApplicationController
     @petition = Petition.find(params[:id])
   end
 
-    private
-      def petition_params
-      	params.require(:petition).permit(:title, :body)
-      end
+  private
+    def petition_params
+      params.require(:petition).permit(:title, :body)
+    end
 end
