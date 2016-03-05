@@ -1,0 +1,8 @@
+<h1>Это index.html.erb файл... Petitions</h1>
+
+<% @petitions.each do |petition| %>
+	<div class="post_wrapper">
+	  <h2 class="title"><%= link_to petition.title, petition %></h2>
+	  <p class="date"><%= petition.created_at.strftime("%B, %d, %Y") %></p>
+    </div>
+<% end %>
