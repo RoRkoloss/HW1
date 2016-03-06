@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 20160305200614) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "petitions", ["user_id"], name: "index_petitions_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email"
     t.string   "firstname"

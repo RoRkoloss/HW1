@@ -1,6 +1,6 @@
 class PetitionsController < ApplicationController
 	def index
-    @petitions = Petition.all.order('created_at DESC')
+    @petitions = Petition.last(10)
 	end
 
 	def new
@@ -8,9 +8,10 @@ class PetitionsController < ApplicationController
 
   def create
     @petition = Petition.new(petition_params)
+    @petition.user_id = current_user.id
     @petition.save
       
-    redirect_to @petition
+    redirect_to root_url
   end
 
   def show

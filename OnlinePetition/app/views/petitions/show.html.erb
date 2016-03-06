@@ -1,11 +1,7 @@
-<h1 class="title">
+<h1>
   <%= @petition.title %>
  </h1>
 
- <p class="date">
- 	Submitted <%= time_ago_in_words(@petition.created_at) %> Ago
- </p>
-
- <p class="body">
+ <p>
  	<%= @petition.body %>
  </p>
